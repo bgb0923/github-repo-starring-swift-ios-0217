@@ -14,7 +14,9 @@ class ReposTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         store.getRepositories { _ in
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
     
