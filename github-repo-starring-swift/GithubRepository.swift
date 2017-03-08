@@ -9,21 +9,21 @@
 import UIKit
 
 class GithubRepository {
-    var fullName: String
-    var htmlURL: URL
-    var repositoryID: String
     
-    init(dictionary: [String : Any]) {
-        guard let
-            name = dictionary["full_name"] as? String,
-            let valueAsString = dictionary["html_url"] as? String,
-            let valueAsURL = URL(string: valueAsString),
-            let repoID = dictionary["id"] as? Int
-            else { fatalError("Could not create repository object from supplied dictionary") }
+    let fullName: String
+    var htmlURL: URL?
+    let repositoryID: String
+    
+    init(dictionary: [String:Any]) {
+        self.fullName = dictionary["full_name"] as? String ?? "No Name"
         
-        htmlURL = valueAsURL
-        fullName = name
-        repositoryID = String(repoID)
+        self.repositoryID = String(describing: dictionary["id"] ?? "No Repo ID")
+        
+        if let owner = dictionary["owner"] as? [String:Any] {
+            let urlString = owner["html_url"] as? String ?? "No URL"
+            if let unwrappedURL = URL(string: urlString) {
+                self.htmlURL = unwrappedURL
+            }
+        }
     }
-    
 }

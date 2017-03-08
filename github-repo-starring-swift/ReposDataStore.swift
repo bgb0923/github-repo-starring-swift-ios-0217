@@ -11,21 +11,15 @@ import UIKit
 class ReposDataStore {
     
     static let sharedInstance = ReposDataStore()
-    fileprivate init() {}
+    private init() {}
+    var repositories = [GithubRepository]()
     
-    var repositories:[GithubRepository] = []
-    
-    func getRepositories(with completion: @escaping () -> ()) {
-        GithubAPIClient.getRepositories { (reposArray) in
-            self.repositories.removeAll()
-            for dictionary in reposArray {
-                guard let repoDictionary = dictionary as? [String : Any] else { fatalError("Object in reposArray is of non-dictionary type") }
-                let repository = GithubRepository(dictionary: repoDictionary)
-                self.repositories.append(repository)
-                
-            }
+    func getRepositories(_ completion: @escaping () -> Void) {
+        self.repositories.removeAll()
+        GithubAPIClient.getRepositories { (repos) in
+            repos.forEach { self.repositories.append(GithubRepository(dictionary: $0))}
             completion()
         }
     }
-
 }
+
